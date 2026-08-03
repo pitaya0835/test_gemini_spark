@@ -1,8 +1,8 @@
 import requests
 import datetime
+import sys  # 1. sysモジュールをインポート
 
 def fetch_hf_trends():
-    # Hugging FaceのトレンドモデルAPI（上位10件）
     url = "https://huggingface.co/api/models?sort=trending&limit=10"
     
     try:
@@ -11,14 +11,12 @@ def fetch_hf_trends():
         models = response.json()
     except Exception as e:
         print(f"データの取得に失敗しました: {e}")
-        return
+        sys.exit(1)  # 2. 正常終了させず、スクリプトをエラーとして異常終了させる
 
-    # 実行日の日付（日本時間への配慮としてスクリプト側で明示してもOK）
     today = datetime.date.today().strftime("%Y-%m-%d")
     
-    # Markdownのテキストを構築
     output = f"# Hugging Face トレンドモデル Top 10 ({today})\n\n"
-    output += "毎日正午に自動更新されます。\n\n"
+    output += "毎日正午に自动更新されます。\n\n"
     output += "| 順位 | モデル名 | リンク | いいね数 (Likes) |\n"
     output += "| :---: | :--- | :---: | :---: |\n"
     
@@ -28,7 +26,6 @@ def fetch_hf_trends():
         url_link = f"https://huggingface.co/{model_id}"
         output += f"| {i} | **{model_id}** | [リンク]({url_link}) | {likes} |\n"
         
-    # trending.md として保存（毎回上書き）
     with open("trending.md", "w", encoding="utf-8") as f:
         f.write(output)
     print("trending.md の作成が完了しました。")

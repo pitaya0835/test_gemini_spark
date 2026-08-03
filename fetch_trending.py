@@ -1,22 +1,23 @@
 import requests
 import datetime
-import sys  # 1. sysモジュールをインポート
+import sys
 
 def fetch_hf_trends():
-    url = "https://huggingface.co/api/models?sort=trending&limit=10"
+    # ⭕ 正しいソートパラメータは `trendingScore` です
+    url = "https://huggingface.co/api/models?sort=trendingScore&limit=10"
     
     try:
         response = requests.get(url, timeout=10)
-        response.raise_for_status()
+        response.raise_for_status() # ここでエラーを検知できるようになります
         models = response.json()
     except Exception as e:
         print(f"データの取得に失敗しました: {e}")
-        sys.exit(1)  # 2. 正常終了させず、スクリプトをエラーとして異常終了させる
+        sys.exit(1) 
 
     today = datetime.date.today().strftime("%Y-%m-%d")
     
     output = f"# Hugging Face トレンドモデル Top 10 ({today})\n\n"
-    output += "毎日正午に自动更新されます。\n\n"
+    output += "毎日正午に自動更新されます。\n\n"
     output += "| 順位 | モデル名 | リンク | いいね数 (Likes) |\n"
     output += "| :---: | :--- | :---: | :---: |\n"
     
